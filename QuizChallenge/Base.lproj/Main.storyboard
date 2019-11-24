@@ -8,10 +8,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--Quiz View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="QuizChallenge" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="QuizViewController" customModule="QuizChallenge" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -79,10 +79,19 @@
                                 <color key="backgroundColor" systemColor="tertiaryLabelColor" red="0.23529411759999999" green="0.23529411759999999" blue="0.26274509800000001" alpha="0.29999999999999999" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <action selector="changedText:" destination="BYZ-38-t0r" eventType="editingChanged" id="pDs-tE-gdV"/>
+                                    <action selector="onReturnClicked:" destination="BYZ-38-t0r" eventType="primaryActionTriggered" id="B7w-2u-etB"/>
+                                </connections>
                             </textField>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="t4f-aE-4kw">
-                                <rect key="frame" x="16" y="161" width="343" height="356"/>
+                                <rect key="frame" x="16" y="161" width="359" height="356"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="BYZ-38-t0r" id="pgM-eO-pF6"/>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="hFd-hw-IUJ"/>
+                                </connections>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
@@ -92,7 +101,7 @@
                             <constraint firstItem="5VV-5O-9Sg" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="7J6-E9-mN4"/>
                             <constraint firstItem="o7w-aG-PTY" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="HYe-27-JbC"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="5VV-5O-9Sg" secondAttribute="bottom" id="JDi-HA-dtN"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="t4f-aE-4kw" secondAttribute="trailing" constant="16" id="Jqp-t9-IAX"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="t4f-aE-4kw" secondAttribute="trailing" id="Jqp-t9-IAX"/>
                             <constraint firstItem="xZ8-DE-dUc" firstAttribute="top" secondItem="o7w-aG-PTY" secondAttribute="bottom" constant="16" id="KQ2-6f-YIf"/>
                             <constraint firstItem="t4f-aE-4kw" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="16" id="Q5T-GJ-yMg"/>
                             <constraint firstItem="5VV-5O-9Sg" firstAttribute="top" secondItem="t4f-aE-4kw" secondAttribute="bottom" constant="16" id="QFC-Rf-hd6"/>
@@ -106,6 +115,7 @@
                     </view>
                     <connections>
                         <outlet property="btnStartReset" destination="ULt-JR-xhH" id="wYt-o9-cTk"/>
+                        <outlet property="constraintScoreView" destination="JDi-HA-dtN" id="Plf-99-mGC"/>
                         <outlet property="lblScore" destination="Xnf-6L-ROe" id="O46-Se-W1c"/>
                         <outlet property="lblTimeLeft" destination="M1Q-x1-i88" id="QZS-zg-ehC"/>
                         <outlet property="lblTitle" destination="o7w-aG-PTY" id="GjL-9b-T63"/>

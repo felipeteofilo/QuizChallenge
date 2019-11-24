@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  QuizViewController.swift
 //  QuizChallenge
 //
 //  Created by Felipe Teofilo on 23/11/19.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController
+class QuizViewController: UIViewController, UITableViewDelegate, UITableViewDataSource
 {
     //MARK: - View Objects
     
@@ -19,6 +19,9 @@ class ViewController: UIViewController
     @IBOutlet var lblScore: UILabel!
     @IBOutlet var lblTimeLeft: UILabel!
     @IBOutlet var btnStartReset: UIButton!
+    
+    //Constraint from views
+    @IBOutlet var constraintScoreView: NSLayoutConstraint!
     
     //MARK: - Class Objects
     
@@ -31,19 +34,34 @@ class ViewController: UIViewController
     var iScorePoints: Int = 0
     var iTotalPoints: Int = 0
     
+    //TableView objects
+    var arrAnswers: [String] = []
+    var arrRightAnswers: [String] = []
+    
     //Names of button
     let sResetName = "Reset"
     let sStartName = "Start"
     
     //MARK: - ViewController Methods
     
+    override func viewWillAppear(_ animated: Bool)
+    {
+        super.viewWillAppear(animated)
+    }
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
         
+        arrAnswers.append("int");
+        arrAnswers.append("float");
+        arrAnswers.append("double");
+        
+        iTotalPoints = arrAnswers.count
+        
         //start the initial texts of screen
-        lblTimeLeft.text = secondsToText(iInitialGameTime)
-        lblScore.text = "0/50"
+        lblTimeLeft.text = Util.secondsToText(seconds: iInitialGameTime)
+        lblScore.text = Util.pointsToText(totalPoints: iTotalPoints, currentPoints: iScorePoints)
         btnStartReset.setTitle(sStartName, for: .normal)
     }
     
@@ -82,7 +100,7 @@ class ViewController: UIViewController
         iGameTime = iInitialGameTime;
         
         //set the initial text of time left
-        lblTimeLeft.text = secondsToText(iGameTime)
+        lblTimeLeft.text = Util.secondsToText(seconds: iGameTime)
     }
     
     /**
@@ -111,7 +129,7 @@ class ViewController: UIViewController
         iGameTime = iInitialGameTime;
         
         //set the initial text of time left
-        lblTimeLeft.text = secondsToText(iGameTime)
+        lblTimeLeft.text = Util.secondsToText(seconds: iGameTime)
     }
     
     /**
@@ -133,31 +151,33 @@ class ViewController: UIViewController
         }
         
         //set the text of time left
-        lblTimeLeft.text = secondsToText(iGameTime)
-    }
-    
-    //MARK: - Util Methods
-    
-    /**
-     Convert  the seconds to  text
-     - Parameter seconds: Seconds to convert
-     - Returns : Seconds converted to text
-     */
-    private func secondsToText(_ seconds: Int) -> String
-    {
-        //get the minutes and seconds of game
-        let iMinutes = (seconds / 60) % 60
-        let iSeconds = seconds % 60
-        
-        //init the string to return
-        let sSecondsTextToReturn = String.init(format: "%0.2d:%0.2d", iMinutes, iSeconds)
-        
-        //return the seconds text
-        return sSecondsTextToReturn
-        
+        lblTimeLeft.text = Util.secondsToText(seconds: iGameTime)
     }
     
     //MARK: - Game Methods
+    
+    private func scorePoint()
+    {
+        //adds the text on the array of right answers and clear the textfield
+        arrRightAnswers.append(textFieldIInsert.text!)
+        textFieldIInsert.text = ""
+        
+        //adds a point to the player
+        iScorePoints += 1
+        
+        //set the text of points
+        lblScore.text = Util.pointsToText(totalPoints: iTotalPoints, currentPoints: iScorePoints)
+        
+        //now we reload the tableview of right answers
+        tableViewWords.reloadData()
+        
+        //verify if the game was over
+        if(iScorePoints == iTotalPoints)
+        {
+            //show the message of game win
+            gameWin()
+        }
+    }
     
     /**
      Init the game
@@ -207,6 +227,91 @@ class ViewController: UIViewController
         
         //show the alert
         show(alertGameOver, sender: nil)
+    }
+    
+    /**
+     Show the message of game win
+     */
+    private func gameWin ()
+    {
+        //init the message of game win
+        let sGameOverMessage = "Good job! You found all the answers on time.Keep up with the great work."
+        
+        //init the alert
+        let alertGameWin = UIAlertController.init(title: "Congratulations", message: sGameOverMessage, preferredStyle: .alert)
+        
+        //init the action button
+        let actionGameWin = UIAlertAction.init(title: "Play Again", style: .default)
+        { actionAux in
+            
+            //resets the game
+            self.resetGame()
+        }
+        
+        //set the action button of this alert
+        alertGameWin.addAction(actionGameWin)
+        
+        //show the alert
+        show(alertGameWin, sender: nil)
+    }
+    
+    //MARK: - TableView Methods
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    {
+        return arrRightAnswers.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    {
+        //init the indentifier of cell
+        let sIdentifierCell = "CellAnswer"
+        
+        //get the right answer
+        let sRightAnswer = arrRightAnswers[indexPath.row]
+        
+        //get the reusable cell
+        var cellAux = tableView.dequeueReusableCell(withIdentifier: sIdentifierCell)
+        
+        //if the reusable cell is not instatiated
+        if (cellAux == nil)
+        {
+            //case the cell was not reusable, create a new one
+            cellAux = UITableViewCell.init(style: .default, reuseIdentifier: sIdentifierCell)
+        }
+        
+        //set the right answer to show
+        cellAux!.textLabel?.text = sRightAnswer
+        
+        return cellAux!
+    }
+    
+    //MARK: - TextField Methods
+    
+    /**
+    When the player click on retun of keyboard
+    */
+    @IBAction func onReturnClicked(_ textField: UITextField)
+    {
+        //case the return button was clicked, cancel the writing
+        textField.endEditing(true);
+    }
+    
+    /**
+    When the text was changed
+    */
+    @IBAction func changedText(_ textField: UITextField)
+    {
+        //if the text changed is not alrealdy on the array of right answers
+        if(!arrRightAnswers.contains(textField.text!))
+        {
+            //if the text changed is a right answer
+            if(arrAnswers.contains(textField.text!))
+            {
+                //score a point to the player
+                scorePoint()
+            }
+        }
     }
 }
 
