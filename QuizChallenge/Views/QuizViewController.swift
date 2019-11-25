@@ -22,12 +22,15 @@ class QuizViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     //Constraint from views
     @IBOutlet var constraintScoreView: NSLayoutConstraint!
+    @IBOutlet var constraintButtonStartReset: NSLayoutConstraint!
     
     //MARK: - Class Objects
     
     //Timer objects
     var timerGame: Timer!
     var iGameTime: Int = 0
+    
+    //Time in seconds
     let iInitialGameTime: Int = 300
     
     //Score objects
@@ -247,6 +250,9 @@ class QuizViewController: UIViewController, UITableViewDelegate, UITableViewData
         //removes the focus of textfield
         textFieldIInsert.endEditing(true)
         
+        //clear the textfield
+        textFieldIInsert.text = ""
+        
         //reset the time
         iGameTime = iInitialGameTime;
         
@@ -424,6 +430,9 @@ class QuizViewController: UIViewController, UITableViewDelegate, UITableViewData
             
             //change the position of the Scoreview
             constraintScoreView.constant = isKeybordShowing ? keyboardFrame.height : 0
+            
+            //change the position of the Button
+            constraintButtonStartReset.constant = isKeybordShowing ? constraintButtonStartReset.constant + keyboardFrame.height : 16
             
             //make the animation be more fruid
             UIView.animate(withDuration: 0, delay: 0, options: .curveEaseOut, animations:{
