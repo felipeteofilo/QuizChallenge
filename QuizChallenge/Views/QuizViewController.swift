@@ -487,12 +487,17 @@ class QuizViewController: UIViewController, UITableViewDelegate, UITableViewData
                     let quizDictionary = try JSONSerialization.jsonObject(with: dataResponse!, options: .allowFragments) as! [String: Any]
                     
                     //get the model of quiz
-                    let quizModelAux = QuizModel.init(json: quizDictionary)
+                    let quizModelAux = try QuizModel.init(json: quizDictionary)
                     
                     //call the completion of the communication on the main thread
                     DispatchQueue.main.sync {
                         self.communicationAnswerCompleted(quizModel: quizModelAux)
                     }
+                }
+                else
+                {
+                    //thow a error that no data was receveid
+                     throw NSError.init(domain: "HTTPURLResponseError", code: 0, userInfo: [NSLocalizedDescriptionKey: "No data received!"])
                 }
             }
             catch let error

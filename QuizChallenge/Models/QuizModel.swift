@@ -13,10 +13,29 @@ class QuizModel
     var question: String
     var answer: [String]
     
-    init(json: [String: Any])
+    init(json: [String: Any]) throws
     {
-        //set the objets
-        question = json["question"] as! String
-        answer = json["answer"] as! [String]
+        //verify if the objects expected was received
+        if let questionAux = json["question"] as? String
+        {
+            //set the objets
+            question = questionAux
+        }
+        else
+        {
+            //throws the error
+            throw NSError.init(domain: "ModelError", code: 0, userInfo: [NSLocalizedDescriptionKey: "The data received doesn't contains the \"question\" attribute"])
+        }
+        
+        if let answerAux = json["answer"] as? [String]
+        {
+            //set the objets
+            answer = answerAux
+        }
+        else
+        {
+            //throws the error
+            throw NSError.init(domain: "ModelError", code: 0, userInfo: [NSLocalizedDescriptionKey: "The data received doesn't contains the \"answer\" attribute"])
+        }
     }
 }
